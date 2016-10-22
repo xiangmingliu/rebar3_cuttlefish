@@ -14,7 +14,10 @@
 -spec init(rebar_state:t()) -> {ok, rebar_state:t()}.
 init(State) ->
     Provider = providers:create([
+            %% 把插件命令为cuttlefish
             {name, ?PROVIDER},            % The 'user friendly' name of the task
+
+            %% provider的实现模块
             {module, ?MODULE},            % The module implementation of the task
             {bare, true},                 % The task can be run by the user, always true
             {deps, ?DEPS},                % The list of dependencies
@@ -38,6 +41,7 @@ do(State) ->
         {overlay, Overlays} when is_list(Overlays) ->
             Schemas = schemas(Overlays, TargetDir),
 
+            rebar_api:info("processing schemas~p", [Schemas]),
             case cuttlefish_schema:files(Schemas) of
                 {errorlist, _Es} ->
                     %% These errors were already printed
